@@ -1,0 +1,85 @@
+:root {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.5;
+    font-weight: 300;
+    color-scheme: light;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* --- THEME COLORS --- */
+    --primary: #38bdf8;       /* Sky-400 */
+    --secondary: #0ea5e9;     /* Sky-500 */
+    --accent: #fb923c;        /* Orange-400 */
+    --bg-dark: #020617;       /* Slate-950 */
+    --text-main: #f8fafc;     /* Slate-50 */
+    --text-muted: #94a3b8;    /* Slate-400 */
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    /* Hide scrollbar for JS control */
+    height: 100vh;
+    /* Studio Light Gradient: Spot in top-center, fades to deep navy */
+    background: radial-gradient(circle at 50% 30%, #172554 0%, #020617 90%);
+    color: #f3f4f6;
+}
+
+/* Floor Shadow Effect */
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -25vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140vw;
+    height: 50vh;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9) 0%, transparent 70%);
+    z-index: -2;
+    pointer-events: none;
+    filter: blur(20px);
+}
+
+html,
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    transition: filter 0.8s ease, opacity 0.8s ease;
+}
+
+#labels-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 15;
+    /* Above UI Container */
+    pointer-events: none;
+}

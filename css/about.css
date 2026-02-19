@@ -1,0 +1,498 @@
+/* About Overlay */
+#about-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    /* Ensure full viewport width for reference */
+    height: 100vh;
+    z-index: 20;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* FIX: Revert to center */
+    /* padding-top removed for vertical centering */
+    overflow: hidden;
+
+    background: rgba(0, 0, 0, 0.4);
+    /* Increased Transparency (0.6 -> 0.4) */
+    backdrop-filter: blur(10px);
+    /* Exact match to Projects Page */
+    -webkit-backdrop-filter: blur(10px);
+
+    transform: translateY(100vh);
+    transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease;
+    will-change: transform;
+}
+
+/* Safe Z-Index for Lines in Overlay */
+#about-overlay .leader-line {
+    z-index: -1 !important;
+    /* Sit on top of parent background, but behind nodes */
+    pointer-events: none;
+    position: absolute;
+    /* Ensure they don't affect flow */
+}
+
+/* ::before removed to fix rendering glitch */
+
+#about-lottie-layer {
+    pointer-events: none;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* SVG Layer */
+#graph-svg {
+    display: none !important;
+    /* Hide ghost element interfering with flex layout */
+}
+
+
+/* Neon Dot */
+
+
+/* Graph Container */
+.graph-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 120px;
+    /* Increased to separate Start -> Level 1 */
+    transform-origin: center top;
+    /* Pivot from top */
+    position: relative;
+    z-index: 50;
+    /* FIX: Ensure container (and nodes) are ABOVE `LeaderLine` (z-1) */
+    width: auto;
+    max-width: 100%;
+    margin: 0 auto;
+    /* Ensure centering */
+    pointer-events: auto;
+}
+
+.node-column:first-child {
+    /* margin-right: 40px; removed to fix centering */
+    margin-bottom: 0;
+}
+
+/* Category Nodes (Orange Upgrade) */
+.category-node {
+    color: var(--accent) !important;
+}
+
+/* Nodes */
+.graph-node {
+    background: rgba(0, 0, 0, 0.5);
+    /* Increased opacity to hide arrow overlap */
+    /* Reduced from 0.85 */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* border: none !important; removed to restore border */
+    outline: none !important;
+    box-shadow: none;
+    /* FIX: Removed !important to allow overrides */
+    filter: none !important;
+    text-shadow: none !important;
+    /* NUCLEAR OPTION */
+    /* Forces no glow */
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #ffffff;
+    /* Increased brightness from var(--text-main) */
+    text-align: left;
+    white-space: nowrap;
+    position: relative;
+    z-index: 100;
+    /* Ensure nodes are above lines (z-90) */
+    opacity: 1;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.graph-node:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.leaf-node:hover {
+    transform: translateY(-4px) scale(1.05) !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    /* REMOVED GLOW */
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+
+/* Reduced padding top for leaf nodes so arrows touch "closer" to text */
+.leaf-node {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+.graph-node:active {
+    transform: scale(0.98);
+}
+
+.graph-node.animate-in {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.leaf-node.animate-in {
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#node-start {
+    font-size: 1rem;
+    color: var(--text-main);
+    padding: 0;
+    /* Removing padding to allow image full bleed */
+    border: 1px solid #fb923c !important;
+    /* Hardcoded Orange */
+    /* Highlight color border - EXTRA THICK */
+    max-width: 700px;
+    /* Reduced width */
+    min-height: 280px;
+    /* Increased height */
+    white-space: normal;
+    /* Clip image corners */
+    display: flex;
+    /* Ensure it behaves as a container */
+    flex-direction: row;
+    /* Ensure row direction is explicit here too if needed, though bio-intro handles it */
+    box-shadow: 0 0 40px rgba(251, 146, 60, 0.4) !important;
+    /* Reduced glow as per user request */
+}
+
+.bio-intro {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    /* Stretch to full height */
+    gap: 0;
+    /* Remove gap, handle with padding */
+    width: 100%;
+    height: 100%;
+    /* Fill container */
+}
+
+.bio-text-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center text vertically */
+    gap: 15px;
+    padding: 30px;
+    /* moved padding here */
+}
+
+.bio-intro h3 {
+    font-size: 2rem;
+    /* Increased from 1.8rem */
+    margin: 0;
+    color: var(--accent);
+}
+
+.bio-text {
+    font-size: 1.2rem;
+    /* Increased from 1.1rem */
+    color: #f1f5f9;
+    /* Brighter (Slate-100) */
+    line-height: 1.6;
+    font-weight: 400;
+    margin: 0;
+    margin: 0;
+    text-indent: 0;
+    /* Removing indent for cleaner look with image */
+}
+
+.bio-img-container {
+    width: 200px;
+    /* Fixed width section */
+    position: relative;
+    /* Removed background tint */
+    display: flex;
+    align-items: flex-end;
+    /* Align image to bottom */
+    justify-content: center;
+    /* Removed border-left */
+}
+
+.bio-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Cover usually best for full bleeds, or contain if chara needs to be fully seen */
+    object-position: top center;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+.category-node {
+    font-weight: 700;
+    font-size: 1.25rem;
+    /* Increased size */
+    color: var(--text-main);
+    text-shadow: none !important;
+}
+
+.leaf-node {
+    font-size: 1.1rem;
+    /* Increased from 1rem */
+    padding: 10px 20px;
+    color: #e2e8f0;
+    /* Brighter than var(--text-muted) */
+    position: relative;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    /* STRICTLY NO GLOW */
+    /* Ensure text is above ::after if needed, though usually default */
+}
+
+/* Fix for Hover Flicker: Expand hit area to account for transform */
+.leaf-node::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    /* Extends hit area so translateY(-4px) doesn't lose hover */
+    z-index: -1;
+    /* Behind the content */
+}
+
+.node-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+}
+
+.branches-column {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    width: auto;
+    /* changed from 100% to auto to fit content */
+    padding: 0 20px;
+    /* flex-direction: row; removed for grid */
+    /* display: flex; */
+    /* justify-content: center; */
+    gap: 0;
+    /* Gap handled by grid columns, though we can add if needed. 0 ensures equal spread. */
+    position: relative;
+    /* flex-wrap: wrap; */
+}
+
+.branch-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+    /* Increased from 25px */
+    position: relative;
+}
+
+.leaf-nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    /* Increased back from 15px */
+    position: relative;
+    margin-left: 0;
+    margin-top: 25px;
+    /* Increased margin */
+    /* Reduced from 20px */
+}
+
+.leaf-meta {
+    font-size: 0.95rem;
+    /* Increased from 0.85rem */
+    color: #cbd5e1;
+    /* Brighter (Slate-300) from #94a3b8 */
+    font-weight: 400;
+    margin-left: 8px;
+    opacity: 1;
+    /* Removed opacity for clarity */
+    transition: opacity 0.2s;
+}
+
+/* Tooltip */
+.info-tooltip {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 220px;
+    background: #1e293b;
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-align: left;
+    line-height: 1.4;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.3s;
+    will-change: opacity, transform;
+    will-change: opacity, transform;
+    z-index: 1000 !important;
+    white-space: normal;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #1e293b transparent transparent transparent;
+}
+
+.graph-node:hover .info-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+body.about-active #main-title {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+/* Animate in when parent has transform: 0 (handled by main.js logic implicitly or we add class) */
+/* Actually, main.js translates the whole overlay. We want internal animation trigger. */
+/* We can use the same triggerScrollAnimation logic to fade this in */
+
+/* Responsive */
+@media (max-width: 1200px) {
+    #about-overlay {
+        /* Keep padding/overflow corrections */
+        padding-top: 80px;
+        overflow-y: auto;
+    }
+
+    .graph-container {
+        transform: scale(0.8);
+        gap: 80px;
+    }
+}
+
+/* Mobile Stacking Breakpoint */
+@media (max-width: 768px) {
+    #about-overlay {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Stack grid on mobile only */
+    .branches-column {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .bio-intro {
+        flex-direction: column-reverse;
+        /* Stack on mobile */
+        align-items: center;
+        text-align: center;
+    }
+
+    .bio-img-container {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+    }
+
+    .bio-avatar {
+        width: 100%;
+        height: auto;
+        max-height: 250px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Spacing between leaf nodes (End Nodes) */
+.leaf-nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    /* Space between each item */
+    justify-content: center;
+    /* Ensure items center in column */
+    margin-top: 60px;
+    /* Space from Category to first item */
+    width: 100%;
+    align-items: center;
+}
+
+/* --- Custom SVG Graph --- */
+/* LeaderLine Z-Index Fix */
+/* LeaderLine Z-Index Fix - Handled by JS now */
+
+/* NUCLEAR FILTER REMOVAL FOR LEADER-LINE */
+svg.leader-line,
+svg.leader-line *,
+.leader-line defs {
+    filter: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove LeaderLine Fixes */
+
+/* Responsive Vertical Spacing for Graph on Tall Screens */
+@media (min-height: 900px) {
+    .graph-container {
+        /* ADJUST TOP VERTICAL SPACING HERE */
+        gap: 120px;
+    }
+
+    .leaf-nodes {
+        /* ADJUST LEAF NODE VERTICAL SPACING HERE */
+        gap: 50px;
+        margin-top: 50px;
+    }
+}
+
+/* NUCLEAR OVERRIDES REMOVED */

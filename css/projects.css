@@ -1,0 +1,645 @@
+/* Projects Overlay */
+#projects-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 30;
+
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    /* Reduced from 0.4 */
+    backdrop-filter: blur(8px);
+
+    transform: translateY(100vh);
+    transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease, filter 2.0s ease;
+    will-change: transform;
+}
+
+.projects-container {
+    padding: 100px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    pointer-events: auto;
+    width: 90%;
+    height: 85%;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.projects-container::-webkit-scrollbar {
+    display: none;
+}
+
+.section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    color: var(--accent);
+    /* Theme Orange */
+    margin-bottom: 40px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 15px;
+}
+
+.project-category {
+    margin-bottom: 50px;
+}
+
+.project-category h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    color: #e2e8f0;
+    margin-bottom: 20px;
+    padding-left: 10px;
+    border-left: 4px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-arrow {
+    font-size: 1.2rem;
+    color: var(--accent);
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.project-category h3:hover .category-arrow {
+    transform: translateX(5px);
+    opacity: 1;
+}
+
+.projects-scroll-row {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 40px 10px;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.projects-scroll-row::-webkit-scrollbar {
+    height: 6px;
+}
+
+.projects-scroll-row::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+
+/* Flip Card Styles */
+.project-card {
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+    height: 320px;
+    /* perspective: 3000px; REMOVED */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    cursor: pointer;
+    /* CHANGED from default to pointer */
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    flex: 0 0 260px;
+}
+
+.project-card:hover {
+    transform: none;
+    box-shadow: none;
+    background: transparent;
+    border: none;
+    z-index: 100;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* transform-style: preserve-3d; REMOVED */
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.project-card:hover .card-inner {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: rgba(30, 41, 59, 0.4);
+    /* Reduced from 0.6 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Bouncy pop */
+}
+
+.card-front {
+    display: flex;
+    flex-direction: column;
+    background: rgba(30, 41, 59, 0.6);
+    /* Reduced from 0.8 */
+}
+
+/* Hover Reveal - View Details */
+.card-front::after {
+    content: 'View Details ↓';
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.project-card:hover .card-front::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhanced Hover Elevation */
+.project-card:hover .card-inner {
+    transform: translateY(-12px);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4);
+    border-color: var(--accent);
+    /* Optional highlight */
+}
+
+.card-img-container {
+    height: 55%;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-front-content {
+    height: 45%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Changed to column */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: transparent;
+}
+
+.card-front-content h4 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin: 0;
+    font-weight: 700;
+}
+
+.card-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+    line-height: 1.3;
+    font-weight: 400;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #1e293b;
+}
+
+.card-back p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.more-btn {
+    background: var(--primary);
+    color: #0f172a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.more-btn:hover {
+    background: #7dd3fc;
+}
+
+.more-btn::after {
+    content: '→';
+    font-size: 1.1em;
+}
+
+.card-footer-tags {
+    display: none;
+}
+
+/* Projects Page Updates */
+
+/* Prevent horizontal scroll */
+.projects-scroll-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    /* Wrap items */
+    overflow: hidden;
+    /* Hide overflow */
+    padding: 20px 10px;
+    /* Adjusted padding */
+    justify-content: flex-start;
+    /* Start from left */
+    /* Limit height or max-width if necessary */
+    max-height: 340px;
+    /* Ensure only one row fits if needed, or let JS limit count */
+}
+
+/* Bigger Arrow & Spacing */
+.category-arrow {
+    font-size: 1.8rem;
+    /* Bigger */
+    color: var(--accent);
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+    margin-left: 15px;
+    /* Added 15px space */
+    vertical-align: middle;
+}
+
+.project-category h3 {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.project-category h3:hover {
+    color: var(--highlight-text);
+}
+
+/* Sector Overlay - FULL PAGE GRID */
+#sector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 40;
+    /* Above projects-overlay (30) */
+    background: rgba(10, 10, 14, 0.95);
+    /* Darker background */
+    backdrop-filter: blur(20px);
+    overflow-y: auto;
+    padding: 40px;
+    transform: translateY(100vh);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sector-overlay.active {
+    transform: translateY(0);
+}
+
+.sector-header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+    margin-top: 60px;
+    /* Space for back button */
+}
+
+.sector-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    color: var(--accent);
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.back-btn {
+    position: fixed;
+    /* Fixed so it stays visible */
+    top: 30px;
+    left: 30px;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    padding: 10px 0;
+    /* Adjusted padding since no border/bg */
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    z-index: 50;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background: transparent;
+    color: var(--accent);
+    opacity: 0.8;
+}
+
+/* Grid Layout */
+.sector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 60px 30px;
+    width: 100%;
+    max-width: 1200px;
+    padding-bottom: 60px;
+}
+
+/* Reuse existing project-card styles but ensure they fit in grid */
+.sector-grid .project-card {
+    width: 100%;
+    max-width: 100%;
+    /* flex: auto; */
+    height: 340px;
+    /* Slightly taller for grid if needed */
+    opacity: 0;
+    /* Hidden initially for animation */
+    transform: translateY(30px);
+}
+
+/* Animation Class */
+.project-card.slide-up {
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slideUpFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* UI Isolation - Hiding Elements */
+/* These classes will be toggled on BODY or specific elements via JS */
+.ui-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.4s ease;
+}
+
+/* --- PROJECT DETAILS VIEW --- */
+#project-details-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 60;
+    /* Higher than sector-overlay (40) */
+    background: #0f172a;
+    /* Solid dark background */
+    overflow-y: auto;
+    transform: translateX(100%);
+    /* Slide in from right */
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+#project-details-overlay.active {
+    transform: translateX(0);
+}
+
+.details-content-wrapper {
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 80px 30px 100px;
+}
+
+.details-back-btn {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s;
+}
+
+.details-back-btn:hover {
+    opacity: 0.8;
+}
+
+/* Header */
+.details-header {
+    margin-bottom: 50px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+}
+
+.details-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3rem;
+    color: #fff;
+    margin: 0 0 15px 0;
+}
+
+/* Grid Layout */
+.details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+@media (max-width: 768px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .details-title {
+        font-size: 2rem;
+    }
+}
+
+/* Main Content */
+.details-section {
+    margin-bottom: 30px;
+}
+
+.details-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.details-section h3::before {
+    content: '//';
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.details-goal {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+    padding-left: 15px;
+}
+
+.details-desc,
+.details-overview,
+.details-how-it-works,
+.details-key-features,
+.details-limitations {
+    font-size: 1rem;
+    color: #e2e8f0;
+    line-height: 1.7;
+}
+
+/* Sidebar Meta */
+.details-sidebar {
+    background: rgba(30, 41, 59, 0.5);
+    padding: 30px;
+    border-radius: 12px;
+    height: fit-content;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-item {
+    margin-bottom: 25px;
+}
+
+.meta-item:last-child {
+    margin-bottom: 0;
+}
+
+.meta-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.meta-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+}
+
+/* Screenshots */
+.details-screenshots h3 {
+    font-family: 'JetBrains Mono', monospace;
+    color: #fff;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+.screenshots-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 80px;
+}
+
+.screenshot-placeholder {
+    aspect-ratio: 16/9;
+    background: #1e293b;
+    border: 2px dashed #334155;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* CTA */
+.details-cta {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-btn {
+    background: var(--accent);
+    color: #0f172a;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.6);
+}
+
+/* Category Header with Count */
+.project-category h3 {
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+    /* justify-content: space-between; REMOVED - Using margin-left auto for count */
+}
+
+.project-count {
+    margin-left: auto;
+    font-size: 0.8rem !important;
+    opacity: 0.6 !important;
+    font-weight: normal;
+}
