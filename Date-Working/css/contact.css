@@ -15,7 +15,7 @@
     /* Reduced from 0.75 */
     backdrop-filter: blur(10px);
 
-    transform: translateY(150vh);
+    transform: translateY(100vh);
     transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease, filter 2.0s ease;
     will-change: transform;
 }
@@ -141,15 +141,17 @@
 .send-btn {
     padding: 12px 40px;
     font-family: 'Roboto', sans-serif;
+    /* Matched Home font */
     font-size: 1rem;
     font-weight: 900;
-    color: #ffffff;
-    background: #e65c00;
+    color: #0f172a;
+    background: var(--accent);
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    box-shadow: none;
+    /* Removed glow */
     position: relative;
     overflow: hidden;
     z-index: 10;
@@ -159,21 +161,13 @@
 }
 
 .send-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
-}
-
-.send-btn:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.6);
 }
 
 .social-links-row {
     display: flex;
-    justify-content: center;
-    /* Center the icons instead of spreading them to the edges */
-    gap: 25px;
-    /* Add explicit spacing between the centered icons */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-top: 15px;
@@ -412,15 +406,5 @@
 
     100% {
         transform: translate(180px, 180px) translateY(-25px);
-    }
-}
-
-/* 1080p Vertical Scaling Fix */
-@media (max-height: 1000px) and (min-width: 769px) {
-    .contact-container {
-        transform: scale(0.75);
-        transform-origin: top center;
-        margin-top: 150px;
-        /* Slight offset to drop it nicely under nav */
     }
 }

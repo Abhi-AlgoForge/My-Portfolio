@@ -168,12 +168,12 @@ export function initScene() {
             labelCount = 12;
             dotCount = 40;
         } else {
-            // Standard Desktop - Expanded to reduce clutter without removing nodes
-            spreadX = 160;
-            spreadY = 110;
-            spreadZ = 80;
-            labelCount = 20;
-            dotCount = 65; // Increased non-labeled dots significantly
+            // Standard Desktop
+            spreadX = 110;
+            spreadY = 70;
+            spreadZ = 50;
+            labelCount = 25;
+            dotCount = 50;
         }
 
         nodes.length = 0;
@@ -233,11 +233,9 @@ export function initScene() {
         selectedWords.forEach((text, i) => {
             let t;
             if (i < 3) {
-                // Hero labels at the wide bottom base of the cone (t near 1.0)
-                t = 0.85 + Math.random() * 0.15;
+                t = 0.1 + Math.random() * 0.25;
             } else {
-                // Bias all labels heavily toward the wide base (t=1.0) instead of the pointy tip (t=0.0)
-                t = 1.0 - (Math.pow(Math.random(), 2.0) * 0.9);
+                t = 0.4 + Math.random() * 0.6;
             }
 
             const x = tipX - (t * length);
@@ -262,9 +260,8 @@ export function initScene() {
 
         // Filler Dots
         for (let i = 0; i < dotCount; i++) {
-            // Bias filler dots heavily toward the wide base of the cone (t=1.0) instead of the pointy tip
-            let t = 1.0 - (Math.pow(Math.random(), 2.5) * 0.95);
-            t = Math.max(0.05, Math.min(1.0, t));
+            let t = Math.pow(Math.random(), 0.6);
+            t = Math.max(0.05, t);
             const x = tipX - (t * length);
             const maxR = t * maxSpread;
             const angle = Math.random() * Math.PI * 2;
@@ -352,14 +349,9 @@ export function initScene() {
 
                 dummyObj.position.copy(node.currentPos);
 
-                // --- DYNAMIC SCALE ANIMATION ---
-                // Pop in by scaling from 0 to 1, scaled heavily by screen width
-                // 1920px base width means 1080p is exactly 1.0 scale baseline
-                const currentWidth = window.innerWidth;
-                const responsiveNodeScale = Math.min(2.0, Math.max(0.4, currentWidth / 1920));
-                const finalEase = ease * responsiveNodeScale;
-
-                dummyObj.scale.set(finalEase, finalEase, finalEase);
+                // --- SCALE ANIMATION ---
+                // "Pop" in by scaling from 0 to 1
+                dummyObj.scale.set(ease, ease, ease);
 
                 dummyObj.updateMatrix();
                 nodeMesh.setMatrixAt(i, dummyObj.matrix);
@@ -388,12 +380,8 @@ export function initScene() {
                     const x = (projected.x * .5 + .5) * window.innerWidth;
                     const y = (-(projected.y * .5) + .5) * window.innerHeight;
 
-                    // Dynamically scale text labels for 4k vs 1080p, with a higher baseline for legibility
-                    const currentWidth = window.innerWidth;
-                    // Dialed back divisor and floor: 1600 offers a moderate boost over default 1920 without blowing up size like 1300
-                    const responsiveLabelScale = Math.min(2.5, Math.max(0.65, currentWidth / 1600));
                     const dist = camera.position.distanceTo(worldPos);
-                    let scale = Math.max(0.2, (30 * responsiveLabelScale) / dist);
+                    let scale = Math.max(0.5, 45 / dist);
                     let zIndex = 0;
 
                     if (worldPos.z > -2) { // Foreground

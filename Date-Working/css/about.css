@@ -21,7 +21,7 @@
     /* Exact match to Projects Page */
     -webkit-backdrop-filter: blur(10px);
 
-    transform: translateY(150vh);
+    transform: translateY(100vh);
     transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease;
     will-change: transform;
 }
@@ -176,41 +176,22 @@
     font-size: 1rem;
     color: var(--text-main);
     padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    /* Removing padding to allow image full bleed */
+    border: 1px solid #fb923c !important;
+    /* Hardcoded Orange */
+    /* Highlight color border - EXTRA THICK */
     max-width: 700px;
+    /* Reduced width */
     min-height: 280px;
+    /* Increased height */
     white-space: normal;
+    /* Clip image corners */
     display: flex;
+    /* Ensure it behaves as a container */
     flex-direction: row;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05) !important;
-    position: relative;
-}
-
-/* Animated Border Pseudo-element for About Card */
-#node-start::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.5px;
-    background: conic-gradient(from var(--border-angle),
-            transparent 20%,
-            #fb923c 80%,
-            #ffffff 90%,
-            #fb923c 100%);
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 2;
-    filter: drop-shadow(0 0 2px #fdba74) drop-shadow(0 0 5px #f97316) drop-shadow(0 0 15px #ea580c) drop-shadow(0 0 30px rgba(234, 88, 12, 0.8));
-    animation: spin-border 8s linear infinite;
+    /* Ensure row direction is explicit here too if needed, though bio-intro handles it */
+    box-shadow: 0 0 40px rgba(251, 146, 60, 0.4) !important;
+    /* Reduced glow as per user request */
 }
 
 .bio-intro {
@@ -433,16 +414,8 @@ body.about-active #main-title {
     }
 
     .graph-container {
+        transform: scale(0.8);
         gap: 80px;
-    }
-}
-
-/* 1080p Vertical Scaling Fix */
-@media (max-height: 1000px) and (min-width: 769px) {
-    .graph-container {
-        transform: scale(0.75);
-        transform-origin: top center;
-        margin-top: 120px;
     }
 }
 
@@ -477,16 +450,6 @@ body.about-active #main-title {
         height: auto;
         max-height: 250px;
         margin-bottom: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .graph-container {
-        gap: 50px;
-    }
-
-    .leaf-nodes {
-        gap: 40px;
     }
 }
 

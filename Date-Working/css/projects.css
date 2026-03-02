@@ -12,20 +12,18 @@
     /* Reduced from 0.4 */
     backdrop-filter: blur(8px);
 
-    transform: translateY(150vh);
+    transform: translateY(100vh);
     transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease, filter 2.0s ease;
     will-change: transform;
 }
 
 .projects-container {
-    padding: 100px 20px 20vh;
-    /* Added responsive 20vh space below IOT row */
+    padding: 100px 20px 40px;
     max-width: 1200px;
     margin: 0 auto;
     pointer-events: auto;
     width: 90%;
-    min-height: 100%;
-    /* Ensures it fills screen but allows natural content expansion to create real scroll space */
+    height: 85%;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -60,11 +58,6 @@
     gap: 10px;
 }
 
-.project-category:last-child {
-    margin-bottom: 80px;
-    /* Provides extra scroll padding below the final IOT row */
-}
-
 .category-arrow {
     font-size: 1.2rem;
     color: var(--accent);
@@ -83,30 +76,32 @@
     overflow-x: auto;
     padding: 40px 10px;
     scroll-behavior: smooth;
-    scrollbar-width: none;
-    /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none;
-    /* Hide scrollbar for IE/Edge */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
 .projects-scroll-row::-webkit-scrollbar {
-    display: none;
-    /* Hide scrollbar for Chrome/Safari/Webkit */
+    height: 6px;
+}
+
+.projects-scroll-row::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
 }
 
 /* Flip Card Styles */
 .project-card {
     width: 260px;
-    /* Reverted to 260px */
     min-width: 260px;
     max-width: 260px;
-    height: 260px;
-    /* Reverted to 260px */
+    height: 320px;
+    /* perspective: 3000px; REMOVED */
     background: transparent;
     border: none;
     box-shadow: none;
     padding: 0;
     cursor: pointer;
+    /* CHANGED from default to pointer */
     position: relative;
     z-index: 1;
     box-sizing: border-box;
@@ -127,6 +122,7 @@
     height: 100%;
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* transform-style: preserve-3d; REMOVED */
     border-radius: 16px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -143,154 +139,100 @@
     height: 100%;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
-    background-color: #050810;
-    /* Solid opaque very dark blue/black */
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    /* Faint base border */
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    background-color: rgba(30, 41, 59, 0.4);
+    /* Reduced from 0.6 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Bouncy pop */
 }
 
 .card-front {
     display: flex;
     flex-direction: column;
-    /* Solid Dark Background (0 transparency) */
-    background: #0b1121;
-
-    /* Bottom-Right Whitish Glow (Inner Shadow/Inset) */
-    box-shadow: inset -30px -30px 60px rgba(255, 255, 255, 0.03);
-}
-
-/* Fading Neon Border (Top-Left) using mask compositing */
-.card-front::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.5px;
-    /* Thinner neon border */
-    background: linear-gradient(135deg, rgba(56, 189, 248, 1) 0%, rgba(56, 189, 248, 0) 40%);
-    /* Brighter start */
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 2;
-    /* Sharp glowing reflection right on the line */
-    filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.7));
-    /* Slightly stronger glow for thicker border */
+    background: rgba(30, 41, 59, 0.6);
+    /* Reduced from 0.8 */
 }
 
 /* Hover Reveal - View Details */
 .card-front::after {
-    content: 'View Details >';
+    content: 'View Details ↓';
     position: absolute;
-    bottom: 12px;
-    /* Lowered from 20px */
-    left: 50%;
-    /* Centered horizontally */
+    bottom: 15px;
+    left: 0;
     width: 100%;
-    /* Take full width to make centering easier */
     text-align: center;
-    /* Center the text */
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--accent);
     font-family: 'JetBrains Mono', monospace;
     opacity: 0;
-    transform: translateX(-50%) translateY(10px);
-    /* Start lower for slide up */
+    transform: translateY(10px);
     transition: all 0.3s ease;
 }
 
 .project-card:hover .card-front::after {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
-    /* Slide up into exact center */
+    transform: translateY(0);
+}
+
+/* Enhanced Hover Elevation */
+.project-card:hover .card-inner {
+    transform: translateY(-12px);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4);
+    border-color: var(--accent);
+    /* Optional highlight */
+}
+
+.card-img-container {
+    height: 55%;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .card-front-content {
-    height: 100%;
-    padding: 25px 20px 50px 20px;
-    /* Room for view details */
+    height: 45%;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    text-align: left;
+    /* Changed to column */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     background: transparent;
 }
 
-
-
-/* Card front contents handled above */
-
-.card-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.3rem;
-    color: var(--accent);
-    /* Updated to neon highlight color */
+.card-front-content h4 {
+    font-size: 1.25rem;
+    color: var(--text-main);
     margin: 0;
-    margin-bottom: 12px;
     font-weight: 700;
-    order: 1;
-}
-
-.card-tech {
-    width: 100%;
-    padding: 0;
-    margin-bottom: 0;
-    order: 3;
-}
-
-.tech-list {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    width: 100%;
-}
-
-.tech-list li {
-    margin: 0;
-    padding: 4px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.03);
-    font-family: 'JetBrains Mono', monospace;
-    display: inline-flex;
-    align-items: center;
-}
-
-.tech-list li::before {
-    display: none;
 }
 
 .card-desc {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
-    margin: 0;
-    line-height: 1.4;
+    margin-top: 5px;
+    line-height: 1.3;
     font-weight: 400;
-    margin-bottom: 20px;
-    order: 2;
-    /* Prevent overflow text */
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .card-back {
-    display: none;
-    /* Disabling 3D flip card behavior entirely */
+    transform: rotateY(180deg);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #1e293b;
 }
 
 .card-back p {
@@ -301,29 +243,22 @@
 }
 
 .more-btn {
-    background: #e65c00;
-    color: #ffffff;
+    background: var(--primary);
+    color: #0f172a;
     border: none;
     padding: 10px 20px;
-    border-radius: 30px;
+    border-radius: 8px;
     font-size: 0.9rem;
     cursor: pointer;
-    font-weight: 900;
-    transition: transform 0.3s ease;
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
+    font-weight: 600;
+    transition: background 0.2s;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .more-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
-}
-
-.more-btn:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.5);
+    background: #7dd3fc;
 }
 
 .more-btn::after {
@@ -384,12 +319,12 @@
     height: 100vh;
     z-index: 40;
     /* Above projects-overlay (30) */
-    background: #050810;
-    /* Solid, pure dark background */
-    backdrop-filter: blur(5px);
+    background: rgba(10, 10, 14, 0.95);
+    /* Darker background */
+    backdrop-filter: blur(20px);
     overflow-y: auto;
-    padding: 0px 40px;
-    transform: translateY(150vh);
+    padding: 40px;
+    transform: translateY(100vh);
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
     flex-direction: column;
@@ -405,26 +340,30 @@
     max-width: 1200px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     position: relative;
-    margin-top: 0px;
-    padding-bottom: 5px;
-    padding-top: 30px;
+    margin-top: 60px;
+    /* Space for back button */
 }
 
 .sector-title {
     font-family: 'JetBrains Mono', monospace;
     font-size: 2.5rem;
-    color: #ffffff;
-    margin: 0;
+    color: var(--accent);
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
 }
 
 .back-btn {
+    position: fixed;
+    /* Fixed so it stays visible */
+    top: 30px;
+    left: 30px;
     background: transparent;
     border: none;
     color: var(--accent);
-    padding: 0;
+    padding: 10px 0;
+    /* Adjusted padding since no border/bg */
     font-family: 'JetBrains Mono', monospace;
     font-size: 1rem;
     cursor: pointer;
@@ -442,26 +381,25 @@
     opacity: 0.8;
 }
 
-/* Sector Overlay Display Grid */
+/* Grid Layout */
 .sector-grid {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    padding: 20px;
-    padding-bottom: 60px;
-    /* Added extra space below the grid row */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 60px 30px;
     width: 100%;
+    max-width: 1200px;
+    padding-bottom: 60px;
 }
 
 /* Reuse existing project-card styles but ensure they fit in grid */
 .sector-grid .project-card {
     width: 100%;
     max-width: 100%;
-    height: 260px;
-    /* Match updated main card size */
+    /* flex: auto; */
+    height: 340px;
+    /* Slightly taller for grid if needed */
     opacity: 0;
+    /* Hidden initially for animation */
     transform: translateY(30px);
 }
 
@@ -494,9 +432,8 @@
     height: 100vh;
     z-index: 60;
     /* Higher than sector-overlay (40) */
-    background: #1e293b;
-    /* Softer, slightly lighter slate-gray/blue */
-    backdrop-filter: blur(5px);
+    background: #0f172a;
+    /* Solid dark background */
     overflow-y: auto;
     transform: translateX(100%);
     /* Slide in from right */
@@ -513,7 +450,7 @@
     max-width: 1000px;
     width: 100%;
     margin: 0 auto;
-    padding: 40px 30px 100px;
+    padding: 80px 30px 100px;
 }
 
 .details-back-btn {
@@ -539,12 +476,9 @@
 
 /* Header */
 .details-header {
-    margin-bottom: 20px;
-    /* Further reduced from 25px */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 10px;
-    /* Further reduced from 15px */
-    text-align: center;
+    margin-bottom: 50px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
 }
 
 .details-title {
@@ -594,15 +528,12 @@
 }
 
 .details-goal {
-    font-size: 1.05rem;
-    color: #94a3b8;
-    line-height: 1.7;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    line-height: 1.6;
     font-style: italic;
-    border-left: 3px solid var(--accent);
-    padding-left: 20px;
-    margin-bottom: 10px;
-    text-indent: 0 !important;
-    /* Force removal of indent for Goal paragraph */
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+    padding-left: 15px;
 }
 
 .details-desc,
@@ -610,60 +541,9 @@
 .details-how-it-works,
 .details-key-features,
 .details-limitations {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
+    color: #e2e8f0;
     line-height: 1.7;
-    word-spacing: 1.5px;
-    letter-spacing: 0.3px;
-    /* Slightly widened letter spacing */
-    color: #ffffff;
-    /* Absolute bright white */
-    margin-bottom: 15px;
-}
-
-.details-section p {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    word-spacing: 1.5px;
-    letter-spacing: 0.3px;
-    /* Slightly widened letter spacing */
-    color: #ffffff;
-    /* Absolute bright white */
-    margin-bottom: 15px;
-    text-indent: 2.5rem;
-    /* Tab space */
-}
-
-/* Dynamically Generated Bulleted Lists by JS */
-.details-list {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    word-spacing: 1.5px;
-    letter-spacing: 0.3px;
-    color: #ffffff;
-    margin-bottom: 20px;
-    padding-left: 20px;
-    /* Indent the whole block */
-    list-style-type: none;
-    /* We'll use custom bullets */
-}
-
-.details-list li {
-    margin-bottom: 10px;
-    position: relative;
-    padding-left: 15px;
-}
-
-.details-list li::before {
-    content: '▪';
-    color: var(--accent);
-    /* Neon highlight bullet point */
-    position: absolute;
-    left: 0;
-    top: -2px;
-    font-size: 1.2rem;
 }
 
 /* Sidebar Meta */
@@ -686,9 +566,7 @@
 .meta-label {
     display: block;
     font-size: 0.85rem;
-    color: var(--accent);
-    /* Highlight Color */
-    font-weight: 700;
+    color: #64748b;
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -735,28 +613,20 @@
 }
 
 .cta-btn {
-    background: #e65c00;
-    color: #ffffff;
+    background: var(--accent);
+    color: #0f172a;
     border: none;
-    padding: 10px 20px;
-    /* Reduced padding for smaller width */
-    font-size: 0.95rem;
-    font-weight: 400;
-    /* Non-bold text */
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
     border-radius: 30px;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .cta-btn:hover {
     transform: translateY(-3px);
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
-}
-
-.cta-btn:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.6);
 }
 
 /* Category Header with Count */
@@ -772,22 +642,4 @@
     font-size: 0.8rem !important;
     opacity: 0.6 !important;
     font-weight: normal;
-}
-
-/* 1080p Vertical Scaling Fix */
-@media (max-height: 1000px) and (min-width: 769px) {
-
-    /* Remove global scale that makes text illegible */
-    .projects-container {
-        margin-top: 10px;
-    }
-
-    #sector-overlay .sector-header {
-        margin-top: 20px;
-        margin-bottom: 30px;
-    }
-
-    .sector-grid {
-        gap: 30px 20px;
-    }
 }

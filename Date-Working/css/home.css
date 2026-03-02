@@ -97,17 +97,12 @@
     left: 50%;
     top: 50%;
     transform: translateY(-50%);
-    width: 420px;
+    width: auto;
+    max-width: 50vw;
     z-index: 100;
     pointer-events: auto;
     perspective: 1000px;
-}
-
-@media (min-width: 2500px) {
-    #home-text-container {
-        width: 600px;
-        /*Luci*/
-    }
+    padding: 0 40px;
 }
 
 /* Inner Wrapper for Fade In - Reduced Opacity */
@@ -130,17 +125,11 @@
     /* Much brighter top Highlight */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05);
     /* Inner Glow */
-    border-radius: 30px;
+    border-radius: 40px;
     position: relative;
     overflow: visible;
-    padding: 35px 35px;
-}
-
-@media (min-width: 2500px) {
-    .home-text-inner {
-        border-radius: 60px;
-        padding: 60px 90px;
-    }
+    /* Changed from hidden to allow glow */
+    padding: 50px 40px;
 }
 
 /* @property for smooth angle interpolation */
@@ -155,8 +144,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: inherit;
-    /* FIXED: forces pseudoelement to perfectly match parent's dynamic clamp curve on 4K */
+    border-radius: 40px;
     padding: 1.5px;
     /* Sleek thin border */
     background: conic-gradient(from var(--border-angle),
@@ -210,37 +198,39 @@
     line-height: 1.6;
     opacity: 1;
     margin: 0;
-    max-width: 100%;
 }
 
-@media (min-width: 2500px) {
-    .hero-text {
-        font-size: 18px;
-    }
+.hero-top {
+    margin-bottom: 25px;
+}
+
+.hero-bottom {
+    margin-top: 25px;
+    max-width: 600px;
+}
+
+.bigger-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
 }
 
 .highlight-text {
     color: var(--accent);
+    font-weight: 500;
 }
 
+/* Main Title Styling */
 #main-name {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    font-size: 42px;
+    font-size: 3rem;
     color: var(--text-main);
-    margin: 25px 0;
-    /* Spacing natively handles pushing the top and bottom .hero-text blocks away uniformly */
+    margin: 0;
     padding: 0;
     text-shadow: none;
     transition: transform 0.3s ease, opacity 0.5s ease;
     white-space: nowrap;
-}
-
-@media (min-width: 2500px) {
-    #main-name {
-        font-size: 60px;
-        margin: 40px 0;
-    }
 }
 
 #main-name:hover {
@@ -541,21 +531,53 @@
     }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 768px) {
     #home-text-container {
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* Centered exactly on mobile */
-        width: 100%;
-        max-width: 90vw;
-        /* Take up more width natively */
+        padding: 0 20px;
+    }
+
+    #main-name {
+        font-size: 2.0rem;
+    }
+
+    .home-text-inner {
+        padding: 30px 15px;
+        width: auto;
+        max-width: 85vw;
+    }
+
+    .hero-text {
+        font-size: 0.85rem;
     }
 }
 
 @media (max-width: 480px) {
     #home-text-container {
+        padding: 0 10px;
+    }
+
+    #main-name {
+        font-size: 1.1rem;
+    }
+
+    .bigger-text {
+        font-size: 1.0rem;
+    }
+
+    .hero-text {
+        font-size: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .home-text-inner {
+        padding: 20px 10px;
         max-width: 95vw;
         width: 95%;
+    }
+
+    .hero-top,
+    .hero-bottom {
+        margin: 10px 0;
     }
 }
 
@@ -622,36 +644,30 @@
 
 /* Hire Me Button */
 .hire-me-btn {
-    margin-top: 30px;
+    margin-top: 45px;
     padding: 12px 36px;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     font-weight: 900;
-    color: #ffffff;
-    background: #e65c00;
-    /* Darker, slightly burnt orange base */
+    color: #0f172a;
+    background: var(--accent);
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: transform 0.3s ease;
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
-    /* Slight inner depth around the rim */
+    transition: all 0.3s ease;
+    box-shadow: none;
     position: relative;
     overflow: hidden;
     z-index: 10;
 }
 
 .hire-me-btn:hover {
-    transform: translateY(-3px);
-    /* Just the lift */
-    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4);
-    /* No extra hover shadow */
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(251, 146, 60, 0.6);
 }
 
 .hire-me-btn:active {
-    transform: translateY(1px);
-    box-shadow: inset 0 5px 8px rgba(0, 0, 0, 0.5);
-    /* Deepen press */
+    transform: translateY(0);
 }
 
 /* Bottom Stats Line */
