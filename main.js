@@ -2269,11 +2269,7 @@ window.addEventListener('popstate', (e) => {
     setTimeout(updateCategoryCounts, 100);
 })();
 
-// --- TELEGRAM CONTACT FORM INTEGRATION ---
-// The user will configure these variables:
-const TELEGRAM_BOT_TOKEN = '8640016593:AAGabENwX4fABFXjw4UP5uMWvuSg6Qpb-rQ'
-const TELEGRAM_CHAT_ID = '7153603213';
-
+// --- CLOUDFLARE PAGES API CONTACT FORM INTEGRATION ---
 const contactSendBtn = document.getElementById('contact-send-btn');
 const contactEmailInput = document.getElementById('contact-email');
 const contactMessageInput = document.getElementById('contact-message');
@@ -2292,32 +2288,27 @@ if (contactSendBtn) {
         contactSendBtn.textContent = 'Sending...';
         contactSendBtn.disabled = true;
 
-        const text = `📬 *New Contact Submission*\n\n*Email:* ${email}\n*Message:* ${message}`;
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-
         try {
-            const response = await fetch(url, {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: text,
-                    parse_mode: 'Markdown'
-                })
+                body: JSON.stringify({ email, message })
             });
 
-            if (response.ok) {
+            const data = await response.json();
+
+            if (response.ok && data.success) {
                 alert('Message sent successfully!');
                 if (contactEmailInput) contactEmailInput.value = '';
                 if (contactMessageInput) contactMessageInput.value = '';
             } else {
-                alert('Failed to send message. Ensure you have configured your Bot Token and Chat ID correctly in main.js.');
+                alert('Failed to send message: ' + (data.error || 'Server error.'));
             }
         } catch (error) {
-            console.error('Telegram Error:', error);
-            alert('An error occurred while sending the message. Please check the console.');
+            console.error('Contact API Error:', error);
+            alert('An error occurred while sending the message. Please check your connection.');
         } finally {
             contactSendBtn.textContent = btnOriginalText;
             contactSendBtn.disabled = false;
