@@ -558,7 +558,40 @@
       </a>
     </div>
   </div>
-
+  <!-- Screen Size Debug Info and Buttons - placed at end of body to avoid stacking context issues -->
+  <div id="screen-debug-panel"
+    style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: lime; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; z-index: 10000; pointer-events: auto; display: none; flex-direction: column; gap: 8px; isolation: isolate; will-change: transform;">
+    <div id="screen-debug-text" style="pointer-events: none;">Screen: ---x---</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 5px; max-width: 250px;">
+      <button class="debug-size-btn" data-width="3840" data-height="2160"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">3840x2160
+        (4K)</button>
+      <button class="debug-size-btn" data-width="2560" data-height="1440"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">2560x1440
+        (2K)</button>
+      <button class="debug-size-btn" data-width="1920" data-height="1080"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">1920x1080
+        (HD)</button>
+      <button class="debug-size-btn" data-width="1920" data-height="800"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">1920x800
+        (Wide)</button>
+      <button class="debug-size-btn" data-width="1366" data-height="768"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">1366x768
+        (Laptop)</button>
+      <button class="debug-size-btn" data-width="1024" data-height="768"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">1024x768
+        (Tablet H)</button>
+      <button class="debug-size-btn" data-width="768" data-height="1024"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">768x1024
+        (Tablet V)</button>
+      <button class="debug-size-btn" data-width="430" data-height="932"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">430x932
+        (Mobile L)</button>
+      <button class="debug-size-btn" data-width="375" data-height="667"
+        style="background:#222;color:#fff;border:1px solid #555;padding:2px 5px;cursor:pointer;font-size:10px;">375x667
+        (Mobile S)</button>
+    </div>
+  </div>
   <script type="module" src="/main.js"></script>
 </body>
 

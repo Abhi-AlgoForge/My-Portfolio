@@ -85,8 +85,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
-    z-index: 10;
+    /* 100dvh ensures bottom elements aren't cut by mobile URL bars */
+    height: 100dvh;
+    z-index: 150;
     pointer-events: none;
     display: block;
     transition: transform 2.0s cubic-bezier(0.22, 1, 0.36, 1), opacity 2.0s ease, filter 2.0s ease;
@@ -94,20 +95,18 @@
 
 #home-text-container {
     position: absolute;
+    /* Keeps element right-aligned to center point on desktop, 
+       but we will override this for mobile in the media queries */
     left: 50%;
     top: 50%;
     transform: translateY(-50%);
-    width: 420px;
+    width: 850px;
+    max-width: 500px;
+    /* Constrain globally so it doesn't get too wide on 2K/4K */
     z-index: 100;
-    pointer-events: auto;
+    pointer-events: none;
+    /* Changed from auto so the invisible container doesn't block clicks globally */
     perspective: 1000px;
-}
-
-@media (min-width: 2500px) {
-    #home-text-container {
-        width: 600px;
-        /*Luci*/
-    }
 }
 
 /* Inner Wrapper for Fade In - Reduced Opacity */
@@ -130,17 +129,13 @@
     /* Much brighter top Highlight */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05);
     /* Inner Glow */
-    border-radius: 30px;
+    border-radius: 60px;
     position: relative;
     overflow: visible;
-    padding: 35px 35px;
-}
-
-@media (min-width: 2500px) {
-    .home-text-inner {
-        border-radius: 60px;
-        padding: 60px 90px;
-    }
+    /* Reduced vertical padding to save space on short landscape screens like 1920x800 */
+    padding: 40px 60px;
+    pointer-events: auto;
+    /* Explicitly allow clicks only on the visible glass box */
 }
 
 /* @property for smooth angle interpolation */
@@ -196,6 +191,8 @@
 
 .home-text-inner.fade-out {
     opacity: 0;
+    pointer-events: none !important;
+    /* Prevents hidden buttons from capturing clicks */
     transform: translateY(-20px) scale(0.95);
 }
 
@@ -205,18 +202,12 @@
 
 .hero-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: 16px;
     color: #e2e8f0;
     line-height: 1.6;
     opacity: 1;
     margin: 0;
     max-width: 100%;
-}
-
-@media (min-width: 2500px) {
-    .hero-text {
-        font-size: 18px;
-    }
 }
 
 .highlight-text {
@@ -226,21 +217,15 @@
 #main-name {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    font-size: 42px;
+    font-size: 55px;
     color: var(--text-main);
-    margin: 25px 0;
+    margin: 30px 0;
     /* Spacing natively handles pushing the top and bottom .hero-text blocks away uniformly */
     padding: 0;
     text-shadow: none;
     transition: transform 0.3s ease, opacity 0.5s ease;
     white-space: nowrap;
-}
-
-@media (min-width: 2500px) {
-    #main-name {
-        font-size: 60px;
-        margin: 40px 0;
-    }
+    /* FORCED to one line so it doesn't break at the hyphen */
 }
 
 #main-name:hover {
@@ -384,15 +369,23 @@
     background: rgba(2, 6, 23, 0.8);
     /* Slightly more transparent */
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 24px;
-    padding: 6px 14px;
+    border-radius: 20px;
+    padding: 6px 12px;
     opacity: 0;
-    transition: opacity 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    transition: opacity 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, filter 0.3s ease;
+}
+
+/* 2K and 4K Ultrawide Label Sizing */
+@media (min-width: 2000px) {
+    .node-label {
+        font-size: 20px;
+        padding: 8px 16px;
+    }
 }
 
 .node-label:hover {
     border-color: rgba(56, 189, 248, 0.8);
-    transform: scale(1.1);
+    filter: brightness(1.3);
     z-index: 1000 !important;
 }
 
@@ -541,23 +534,7 @@
     }
 }
 
-@media (max-width: 780px) {
-    #home-text-container {
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* Centered exactly on mobile */
-        width: 100%;
-        max-width: 90vw;
-        /* Take up more width natively */
-    }
-}
 
-@media (max-width: 480px) {
-    #home-text-container {
-        max-width: 95vw;
-        width: 95%;
-    }
-}
 
 
 
@@ -605,18 +582,105 @@
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
 }
 
+/* HD and Wide Screen (1920px) - Smaller Name Card */
+@media (min-width: 1600px) and (max-width: 1999px) {
+    #home-text-container {
+        max-width: 380px;
+    }
+
+    .home-text-inner {
+        padding: 25px 20px;
+        border-radius: 38px;
+    }
+
+    #main-name {
+        font-size: 42px;
+    }
+
+    .hero-text {
+        font-size: 13px;
+    }
+}
+
 /* Adjust Sidebar for Laptops/Tablets to avoid overlap */
 @media (max-width: 1400px) {
     .sidebar-line {
         height: 100px;
         /* Short line to pull icons up */
     }
+
+    /* Reduce Name Card width for Laptop screens */
+    #home-text-container {
+        left: 50% !important;
+        transform: translateY(-50%);
+        width: 440px;
+    }
+
+    .home-text-inner {
+        padding: 30px 25px;
+        border-radius: 40px;
+    }
+
+    #main-name {
+        font-size: 45px;
+        margin: 20px 0;
+    }
+
+    .hero-text {
+        font-size: 14px;
+    }
 }
 
-/* Hide Sidebar on Mobile */
-@media (max-width: 768px) {
+/* Adjust Sidebar and Home Card on Tablets (Including Landscape 1024px) */
+@media (max-width: 1150px) {
+
+
+    /* Keep the home card on the right side so it doesn't overlap the 3D graph */
+    #home-text-container {
+        left: 50% !important;
+        transform: translateY(-50%);
+        width: 350px;
+    }
+
+    .home-text-inner {
+        padding: 30px 25px;
+        border-radius: 40px;
+    }
+
+    #main-name {
+        font-size: 30px;
+        margin: 20px 0;
+    }
+
+    .hero-text {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 780px) {
     #right-sidebar {
         display: none;
+    }
+
+    #home-text-container {
+        /* Start from screen horizontal mid */
+        left: 50%;
+        transform: translateY(-50%);
+        width: 360px;
+    }
+
+    .home-text-inner {
+        padding: 30px 25px;
+        border-radius: 40px;
+    }
+
+    #main-name {
+        font-size: 30px;
+        margin: 20px 0;
+    }
+
+    .hero-text {
+        font-size: 13px;
     }
 }
 
@@ -677,4 +741,121 @@
     color: #475569;
     /* Slate 600 */
     margin: 0 10px;
+}
+
+/* ========================================= */
+/* MOBILE S (375x667) & SMALL SCREENS        */
+/* ========================================= */
+@media (max-width: 480px) {
+
+    /* Navbar text size and padding shrink to fit 375px */
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    #navbar {
+        gap: 5px;
+        top: 15px;
+        /* Lifted slightly higher from the default 30px */
+    }
+
+    /* Reduce the yellow glow behind the active nav item */
+    #navbar-highlight {
+        width: 100px;
+        height: 40px;
+        filter: blur(10px);
+        /* Reduced from 18px */
+        opacity: 0.6;
+        /* Softer glow */
+    }
+
+    /* Reduce footer copyright text size */
+    .scroll-indicator.show-up-arrow .footer-text {
+        font-size: 0.55rem;
+    }
+
+    /* Isolate text overlay from expanded 3D background */
+    #ui-container {
+        pointer-events: auto;
+        /* Let clicks pass to Home Text if needed */
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 50;
+        /* Needs to be higher than #labels-layer (15) */
+    }
+
+    /* Stop absorbing clicks globally, only home text area absorbs */
+    #ui-container.pointer-events-none {
+        pointer-events: none;
+    }
+
+    /* Recenter the card and shrink width */
+    #home-text-container {
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+    }
+
+    /* Inner box padding & radius reduction */
+    .home-text-inner {
+        padding: 20px 20px;
+        border-radius: 30px;
+    }
+
+    /* Typography scale down */
+    #main-name {
+        font-size: 28px;
+        margin: 15px 0;
+    }
+
+    .hero-text {
+        font-size: 12px;
+    }
+
+    .hire-me-btn {
+        margin-top: 15px;
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
+
+    /* Stack stats line so it doesn't overflow edge */
+    .stats-line {
+        font-size: 0.55rem;
+        bottom: 70px;
+    }
+
+    /* Shrink the floating 3D Tags/Labels */
+    .node-label {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    /* Shrink the mouse scroll indicator */
+    .mouse {
+        width: 18px;
+        height: 30px;
+        border-width: 1.5px;
+    }
+
+    .wheel {
+        width: 2px;
+        height: 6px;
+        top: 4px;
+        animation: scrollWheelMobile 2s infinite;
+    }
+}
+
+/* Custom animation for smaller mouse wheel distance */
+@keyframes scrollWheelMobile {
+    0% {
+        top: 4px;
+        opacity: 1;
+    }
+
+    100% {
+        top: 16px;
+        opacity: 0;
+    }
 }

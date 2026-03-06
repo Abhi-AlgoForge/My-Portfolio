@@ -5,15 +5,17 @@
     left: 0;
     width: 100vw;
     /* Ensure full viewport width for reference */
-    height: 100vh;
+    height: 100dvh;
     z-index: 20;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    /* FIX: Revert to center */
-    /* padding-top removed for vertical centering */
-    overflow: hidden;
+    /* FIX: perfectly center the graph vertically */
+    padding: 60px 0;
+    /* Let flex-box handle the centering instead of massive top padding */
+    overflow-y: auto;
+    overflow-x: hidden;
 
     background: rgba(0, 0, 0, 0.4);
     /* Increased Transparency (0.6 -> 0.4) */
@@ -100,8 +102,7 @@
     /* FIX: Removed !important to allow overrides */
     filter: none !important;
     text-shadow: none !important;
-    /* NUCLEAR OPTION */
-    /* Forces no glow */
+    /* Disable glow effects on graph nodes to keep design clean */
     padding: 14px 24px;
     border-radius: 12px;
     font-family: 'Inter', sans-serif;
@@ -147,7 +148,7 @@
 }
 
 .leaf-node.animate-in {
-    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: fadeIn 0.8s ease forwards;
 }
 
 @keyframes fadeIn {
@@ -179,6 +180,8 @@
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
     max-width: 700px;
+    width: 90vw;
+    /* Added for responsiveness */
     min-height: 280px;
     white-space: normal;
     display: flex;
@@ -312,6 +315,8 @@
     /* Extends hit area so translateY(-4px) doesn't lose hover */
     z-index: -1;
     /* Behind the content */
+    pointer-events: auto;
+    /* Required for hit area extension */
 }
 
 .node-column {
@@ -424,33 +429,142 @@ body.about-active #main-title {
 /* Actually, main.js translates the whole overlay. We want internal animation trigger. */
 /* We can use the same triggerScrollAnimation logic to fade this in */
 
+/* Massive Tall Screen Specific Adjustment (1450px+) */
+@media (min-height: 1450px) {
+    #about-overlay {
+        padding-top: 0;
+        align-items: flex-start;
+        /* Stop centering so we can push to top via margin */
+    }
+
+    .graph-container {
+        margin-top: 20vh;
+        /* Pushes the entire graph down from the top safely */
+        gap: 200px;
+        /* Increase gap between Start node and Categories */
+    }
+
+    .branch-group {
+        gap: 100px;
+        /* Spacing between "Experience" category and the first leaf node */
+    }
+
+    .leaf-nodes {
+        gap: 80px !important;
+        /* Force override spacing between "4y Freelancing" and "2y Trading", etc. */
+    }
+}
+
+/* 2K and Tall Screen Vertical Spacing */
+@media (min-width: 2000px),
+(min-height: 1200px) {
+    .graph-container {
+        gap: 180px;
+        /* Stretch the graph vertically to fill large monitors */
+    }
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
     #about-overlay {
-        /* Keep padding/overflow corrections */
-        padding-top: 80px;
         overflow-y: auto;
     }
 
     .graph-container {
-        gap: 80px;
+        gap: 60px;
+        /* Reduced further to ensure fit without excessive scaling first */
+        transform: scale(0.85);
+        /* Optional: auto-scale entire graph smoothly */
+        transform-origin: top center;
     }
 }
 
 /* 1080p Vertical Scaling Fix */
-@media (max-height: 1000px) and (min-width: 769px) {
+@media (max-height: 1000px) and (min-width: 1051px) {
     .graph-container {
         transform: scale(0.75);
+        transform-origin: center center;
+    }
+}
+
+/* Laptop Specific Fixes (1366x768) */
+@media (max-width: 1400px) and (min-width: 1051px) {
+    #about-overlay {
+        padding: 40px 0;
+    }
+
+    .graph-container {
+        transform: scale(0.75);
+        transform-origin: center center;
+    }
+}
+
+/* Tablet Landscape Specific Fixes */
+@media (max-width: 1050px) and (min-width: 901px) {
+    #about-overlay {
+        padding: 40px 0;
+    }
+
+    .graph-container {
+        transform: scale(0.8);
+        transform-origin: center center;
+    }
+}
+
+/* Tablet Portrait Breakpoint */
+@media (max-width: 900px) {
+    #about-overlay {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 120px;
+        align-items: center;
+        /* Center horizontally again */
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .graph-container {
+        transform: scale(0.85);
         transform-origin: top center;
-        margin-top: 120px;
+        gap: 40px;
+        margin-top: 0;
+        margin-left: 0;
+    }
+
+    #node-start {
+        width: 85vw;
+        max-width: 650px;
+        padding: 15px;
+        min-height: auto;
+    }
+
+    .bio-text-group {
+        padding: 15px;
+    }
+
+    .bio-text {
+        font-size: 0.95rem;
     }
 }
 
 /* Mobile Stacking Breakpoint */
-@media (max-width: 768px) {
-    #about-overlay {
-        flex-direction: column;
-        justify-content: flex-start;
+@media (max-width: 650px) {
+    .graph-container {
+        transform: scale(0.7);
+        gap: 30px;
+    }
+
+    #node-start {
+        width: 95vw;
+        max-width: 400px;
+    }
+
+    .bio-text-group {
+        padding: 8px;
+    }
+
+    .bio-text {
+        font-size: 0.85rem;
     }
 
     /* Stack grid on mobile only */
@@ -468,7 +582,7 @@ body.about-active #main-title {
 
     .bio-img-container {
         width: 100%;
-        max-width: 300px;
+        max-width: 250px;
         height: auto;
     }
 
@@ -476,29 +590,23 @@ body.about-active #main-title {
         width: 100%;
         height: auto;
         max-height: 250px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
 }
 
-@media (max-width: 480px) {
-    .graph-container {
-        gap: 50px;
-    }
-
-    .leaf-nodes {
-        gap: 40px;
-    }
-}
+/* ======================================================= */
+/* GLOBAL STYLES MOVED BEFORE MOBILE MQ TO PREVENT OVERRIDE */
+/* ======================================================= */
 
 /* Spacing between leaf nodes (End Nodes) */
 .leaf-nodes {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+    gap: 30px;
     /* Space between each item */
     justify-content: center;
     /* Ensure items center in column */
-    margin-top: 60px;
+    margin-top: 25px;
     /* Space from Category to first item */
     width: 100%;
     align-items: center;
@@ -508,7 +616,7 @@ body.about-active #main-title {
 /* LeaderLine Z-Index Fix */
 /* LeaderLine Z-Index Fix - Handled by JS now */
 
-/* NUCLEAR FILTER REMOVAL FOR LEADER-LINE */
+/* LeaderLine global filter override — prevents unwanted glows on SVG connector lines */
 svg.leader-line,
 svg.leader-line *,
 .leader-line defs {
@@ -519,7 +627,7 @@ svg.leader-line *,
 /* Remove LeaderLine Fixes */
 
 /* Responsive Vertical Spacing for Graph on Tall Screens */
-@media (min-height: 900px) {
+@media (min-height: 900px) and (min-width: 769px) {
     .graph-container {
         /* ADJUST TOP VERTICAL SPACING HERE */
         gap: 120px;
@@ -527,9 +635,177 @@ svg.leader-line *,
 
     .leaf-nodes {
         /* ADJUST LEAF NODE VERTICAL SPACING HERE */
-        gap: 50px;
-        margin-top: 50px;
+        gap: 30px;
+        margin-top: 30px;
     }
 }
 
-/* NUCLEAR OVERRIDES REMOVED */
+
+
+/* ======================================================= */
+/* MOBILE S (375x667) SPECIFIC LAYOUT                      */
+/* Needs to be at absolute EOF for highest precedence      */
+/* ======================================================= */
+@media (max-width: 480px) {
+
+    /* Push the entire overlay down more on mobile so it clears the sticky navbar */
+    #about-overlay {
+        padding-top: 100px;
+        /* Reduced from 130px based on user feedback to allocate more space for text */
+    }
+
+    /* Base Container aligned left so the horizontal tree can flow right */
+    .graph-container {
+        transform: scale(0.65);
+        gap: 60px;
+        /* Space between Bio Box and Branches */
+        flex-direction: column;
+        align-items: flex-start;
+        /* Align left */
+        justify-content: flex-start;
+        width: max-content;
+        padding: 0 30px;
+        transform-origin: top left;
+        /* Anchor to top-left corner */
+    }
+
+    /* Shrink Bio Top Box (`#node-start`) height, increase width */
+    #node-start {
+        width: 140vw;
+        /* Increased width even more */
+        max-width: none;
+        min-height: auto;
+        /* Center it relative to the left-aligned container. 
+           With 140vw, negative margin/transform needs to be larger to pull it left */
+        transform: translateX(-20vw);
+    }
+
+    .bio-text-group {
+        padding: 20px 20px 15px 20px;
+        /* Increased padding to allocate more height to the actual card */
+        gap: 12px;
+        /* Increased gap for more vertical spacing between paragraphs */
+    }
+
+    .bio-intro h3 {
+        font-size: 1.8rem;
+        /* Increased name size */
+        margin: 0;
+    }
+
+    .bio-text {
+        font-size: 1.05rem;
+        /* Increased text size from 0.95 */
+        line-height: 1.5;
+        /* Further loosened line height for readability */
+    }
+
+    /* HIDE the Bio Avatar entirely on Mobile S as requested */
+    .bio-img-container {
+        display: none !important;
+    }
+
+    /* Categories (Edu, Exp, Skills) all in ONE vertical column */
+    .branches-column {
+        display: flex;
+        flex-direction: column;
+        /* Vertical column */
+        gap: 40px;
+        /* INCREASED gap between major groups (from 20px) */
+        padding: 0;
+        padding-left: 0px;
+        /* Reset shift, relying on width alignment instead */
+        align-items: center;
+        /* Center the whole block */
+    }
+
+    /* Flow Category -> Leaf Nodes from Left to Right */
+    .branch-group {
+        flex-direction: row;
+        align-items: flex-start;
+        /* Align all groups to TOP by default so we can explicitly offset them */
+        gap: 65px;
+        /* INCREASED horizontal spacing between category and leaves */
+        /* Removed position relative and z-index 10 here so invisible flex boxes don't trap tooltips */
+    }
+
+    /* 
+     * OVERRIDES FOR PIXEL PERFECT HORIZONTAL ALIGNMENT 
+     * Since leaf nodes are 48px height + 8px gap = 56px per row.
+     */
+
+    /* Education: Has 1 node. Top alignment works perfectly. */
+    .branches-column>.branch-group:nth-child(1)>.category-node {
+        margin-top: 0 !important;
+    }
+
+    /* Experience: Has 3 nodes (Freelance, Trading, AI). We want to align to the 2nd node (Trading). 
+       This means the Category node needs to be pushed down by exactly 1 row (48px + 8px gap = 56px) */
+    .branches-column>.branch-group:nth-child(2) {
+        margin-left: 24px;
+        /* Shift entire block to the right */
+    }
+
+    .branches-column>.branch-group:nth-child(2)>.category-node {
+        margin-top: 56px !important;
+    }
+
+    /* Skills: Has 3 nodes (Python, AI/ML, Algo). We want to align to the 2nd node (AI/ML).
+       This means the Category node needs to be pushed down by exactly 1 row (56px) */
+    .branches-column>.branch-group:nth-child(3) {
+        margin-left: 38px;
+        /* Shift entire block to the right */
+    }
+
+    .branches-column>.branch-group:nth-child(3)>.category-node {
+        margin-top: 56px !important;
+    }
+
+    /* End Nodes stacked vertically in front of their category */
+    .leaf-nodes {
+        flex-direction: column;
+        margin-top: 0;
+        gap: 8px;
+        /* Further reduced from 12px */
+        align-items: flex-start;
+    }
+
+    /* Force identical heights & kill margins for perfect 50% Y-anchor LeaderLine alignment */
+    .category-node,
+    .leaf-node {
+        height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        /* RESTORED: Centers text vertically inside the box */
+        margin: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 100;
+        /* Ensure actual text boxes grab hover priority globally */
+        pointer-events: auto;
+    }
+
+    /* Left align leaf nodes vertically */
+    .leaf-node {
+        font-size: 1rem;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        justify-content: flex-start !important;
+        text-align: left;
+    }
+
+    /* Right align category nodes vertically */
+    .category-node {
+        font-size: 1.1rem;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        justify-content: flex-end !important;
+        text-align: right;
+        width: 130px;
+        /* Fixed width ensures perfect vertical right alignment against the gap */
+    }
+}
+
+/* EOF - Global Styles moved above Mobile Query to fix precedence */

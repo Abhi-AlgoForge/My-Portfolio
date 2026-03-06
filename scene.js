@@ -48,7 +48,7 @@ export function initScene() {
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     // Front View
-    camera.position.set(0, 0, 45);
+    camera.position.set(0, 0, 28); // Zoomed in closer for HD/Wide screens
 
     // Standard Opaque Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -333,6 +333,11 @@ export function initScene() {
         let morphFactor = (externalScroll - 0.05) * 1.2;
         morphFactor = Math.max(0, Math.min(1, morphFactor));
 
+        // On mobile, force the net to be fully expanded instantly
+        if (window.innerWidth <= 768) {
+            morphFactor = 1.0;
+        }
+
         let activeCount = 0;
         const entranceSpeed = 0.8;
 
@@ -353,10 +358,8 @@ export function initScene() {
                 dummyObj.position.copy(node.currentPos);
 
                 // --- DYNAMIC SCALE ANIMATION ---
-                // Pop in by scaling from 0 to 1, scaled heavily by screen width
-                // 1920px base width means 1080p is exactly 1.0 scale baseline
-                const currentWidth = window.innerWidth;
-                const responsiveNodeScale = Math.min(2.0, Math.max(0.4, currentWidth / 1920));
+                // Pop in by scaling from 0 to 1. Fixed flat scale of 1.0 baseline.
+                const responsiveNodeScale = 1.0;
                 const finalEase = ease * responsiveNodeScale;
 
                 dummyObj.scale.set(finalEase, finalEase, finalEase);
@@ -388,16 +391,26 @@ export function initScene() {
                     const x = (projected.x * .5 + .5) * window.innerWidth;
                     const y = (-(projected.y * .5) + .5) * window.innerHeight;
 
-                    // Dynamically scale text labels for 4k vs 1080p, with a higher baseline for legibility
-                    const currentWidth = window.innerWidth;
-                    // Dialed back divisor and floor: 1600 offers a moderate boost over default 1920 without blowing up size like 1300
-                    const responsiveLabelScale = Math.min(2.5, Math.max(0.65, currentWidth / 1600));
+                    // --- ROBUST 3D DISTANCE SCALING ---
+                    // By directly inversely scaling by physical 3D distance, we guarantee
+                    // that background nodes shrink appropriately relative to the foreground,
+                    // preserving true 3D depth perception.
                     const dist = camera.position.distanceTo(worldPos);
-                    let scale = Math.max(0.2, (30 * responsiveLabelScale) / dist);
+
+                    // 35 is our baseline depth where labels render at 1x CSS font scale.
+                    let scale = 35 / dist;
+
+                    // Removed diagonal scaling metric completely.
+
+                    // Clamp absolute scale limits to prevent labels from completely vanishing
+                    // or exploding in the user's face.
+                    scale = Math.max(0.35, Math.min(1.6, scale));
+
                     let zIndex = 0;
 
-                    if (worldPos.z > -2) { // Foreground
-                        scale *= 1.1;
+                    // Foreground Boost
+                    if (worldPos.z > -2) {
+                        scale *= 1.2;
                         zIndex = 100;
                         node.element.style.opacity = '1';
                     } else {

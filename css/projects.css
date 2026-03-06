@@ -4,7 +4,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    /* 100dvh prevents mobile address bar from hiding the bottom */
+    height: 100dvh;
     z-index: 30;
 
     overflow-y: auto;
@@ -23,7 +24,8 @@
     max-width: 1200px;
     margin: 0 auto;
     pointer-events: auto;
-    width: 90%;
+    width: 100%;
+    /* Changed from 90% */
     min-height: 100%;
     /* Ensures it fills screen but allows natural content expansion to create real scroll space */
     scrollbar-width: none;
@@ -44,6 +46,43 @@
     padding-bottom: 15px;
 }
 
+@media (max-width: 1400px) {
+    .projects-container {
+        transform: scale(0.9);
+        transform-origin: top center;
+        padding-top: 100px;
+        /* Adjust padding to match scale */
+    }
+}
+
+@media (max-width: 900px) {
+    .projects-container {
+        padding-top: 140px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .project-category h3 {
+        font-size: 1.2rem;
+    }
+
+    /* Force 2 columns on tablet instead of dropping to 1 full width column */
+    .projects-scroll-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    /* Let mobile screens drop to 1 stack */
+    .projects-scroll-row {
+        grid-template-columns: 1fr;
+    }
+}
+
 .project-category {
     margin-bottom: 50px;
 }
@@ -61,8 +100,8 @@
 }
 
 .project-category:last-child {
-    margin-bottom: 80px;
-    /* Provides extra scroll padding below the final IOT row */
+    margin-bottom: 20px;
+    /* Reduced extra scroll padding below the final row */
 }
 
 .category-arrow {
@@ -78,30 +117,20 @@
 }
 
 .projects-scroll-row {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    padding: 40px 10px;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none;
-    /* Hide scrollbar for IE/Edge */
-}
-
-.projects-scroll-row::-webkit-scrollbar {
-    display: none;
-    /* Hide scrollbar for Chrome/Safari/Webkit */
+    display: grid;
+    /* Auto-fill creates responsive columns automatically based on screen space */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 25px;
+    padding: 20px 0 40px 0;
 }
 
 /* Flip Card Styles */
 .project-card {
-    width: 260px;
-    /* Reverted to 260px */
-    min-width: 260px;
-    max-width: 260px;
-    height: 260px;
-    /* Reverted to 260px */
+    width: 100%;
+    /* Let the grid control the width */
+    height: 100%;
+    min-height: 280px;
+    /* Ensure content has room to breathe */
     background: transparent;
     border: none;
     box-shadow: none;
@@ -110,7 +139,8 @@
     position: relative;
     z-index: 1;
     box-sizing: border-box;
-    flex: 0 0 260px;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-card:hover {
@@ -237,6 +267,12 @@
     order: 1;
 }
 
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.1rem;
+    }
+}
+
 .card-tech {
     width: 100%;
     padding: 0;
@@ -337,22 +373,7 @@
 
 /* Projects Page Updates */
 
-/* Prevent horizontal scroll */
-.projects-scroll-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    /* Wrap items */
-    overflow: hidden;
-    /* Hide overflow */
-    padding: 20px 10px;
-    /* Adjusted padding */
-    justify-content: flex-start;
-    /* Start from left */
-    /* Limit height or max-width if necessary */
-    max-height: 340px;
-    /* Ensure only one row fits if needed, or let JS limit count */
-}
+/* Removed overriding .projects-scroll-row flex-wrap hack */
 
 /* Bigger Arrow & Spacing */
 .category-arrow {
@@ -444,15 +465,27 @@
 
 /* Sector Overlay Display Grid */
 .sector-grid {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    /* Auto-fill creates responsive columns automatically based on screen space */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
     gap: 40px;
     padding: 20px;
     padding-bottom: 60px;
     /* Added extra space below the grid row */
     width: 100%;
+}
+
+@media (max-width: 900px) {
+    .sector-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .sector-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Reuse existing project-card styles but ensure they fit in grid */
@@ -560,6 +593,16 @@
     grid-template-columns: 2fr 1fr;
     gap: 50px;
     margin-bottom: 60px;
+}
+
+@media (max-width: 1200px) {
+    .details-grid {
+        gap: 30px;
+    }
+
+    .details-content-wrapper {
+        padding: 20px 20px 80px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -789,5 +832,31 @@
 
     .sector-grid {
         gap: 30px 20px;
+    }
+}
+
+/* ======================================================= */
+/* MOBILE S (375x667) SPECIFIC LAYOUT                      */
+/* ======================================================= */
+@media (max-width: 480px) {
+
+    /* Scale entire projects page down and pull title closer to navbar */
+    .projects-container {
+        transform: scale(0.78);
+        transform-origin: top center;
+        padding: 75px 20px 20vh;
+        /* Slightly more top space */
+        /* Scale makes the container visually shorter, compensate with negative margin */
+        margin-bottom: -22vh;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+    }
+
+    /* Reduce card height */
+    .project-card {
+        min-height: 230px;
     }
 }

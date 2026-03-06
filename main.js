@@ -89,6 +89,25 @@ window.addEventListener('wheel', (e) => {
     }
 }, { passive: false });
 
+// Touch Swipe Navigation
+let touchStartY = 0;
+window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+window.addEventListener('touchend', (e) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY - touchEndY; // Positive = swipe up (finger moved up)
+    if (Math.abs(deltaY) < 50) return; // Ignore small accidental swipes
+    if (isScrolling) return;
+
+    const direction = deltaY > 0 ? 1 : -1; // Swipe up = next page, swipe down = prev page
+    const nextIndex = currentSectionIndex + direction;
+    if (nextIndex >= 0 && nextIndex < sections.length) {
+        changeSection(nextIndex);
+    }
+}, { passive: true });
+
 // Nav Click Listener
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
@@ -336,7 +355,6 @@ function updateNavState(index) {
 
     navLinks.forEach(link => {
         if (link.getAttribute('data-target') === activeTarget) {
-            console.log('Active Target:', activeTarget, link);
             link.classList.add('active');
             updateHighlight(link);
         } else {
@@ -413,20 +431,35 @@ function initGraph() {
 
     try {
         // Helper to create line
-        const createLine = (start, end, startX = '50%', pathType = 'straight') => {
+        const createLine = (start, end, startX = '50%', pathType = 'straight', customSockets = null) => {
             if (!LeaderLine) {
                 console.error('LeaderLine not loaded');
                 return null;
             }
+
+            // Standard Desktop Sockets (Bottom to Top)
+            let startSocket = 'bottom';
+            let endSocket = 'top';
+            let startAnchor = LeaderLine.pointAnchor(start, { x: startX, y: '100%' }); // Exact bottom border
+            let endAnchor = LeaderLine.pointAnchor(end, { x: '50%', y: -10 });         // Pulled UP 10px to sit exactly on top
+
+            // Mobile S Custom Horizontal Sockets (Right to Left)
+            if (window.innerWidth <= 480) {
+                startSocket = 'right';
+                endSocket = 'left';
+                startAnchor = LeaderLine.pointAnchor(start, { x: '100%', y: '50%' }); // Exact right border center
+                endAnchor = LeaderLine.pointAnchor(end, { x: 0, y: '50%' });          // Exact left border center
+            }
+
             const line = new LeaderLine(
-                LeaderLine.pointAnchor(start, { x: startX, y: '100%' }), // Exact bottom border
-                LeaderLine.pointAnchor(end, { x: '50%', y: -10 }),      // FIX: Pulled UP 10px to sit exactly on top
+                startAnchor,
+                endAnchor,
                 {
                     color: 'rgba(56, 189, 248, 1)', // Sky-400 (Solid)
                     size: 3,
                     path: pathType,
-                    startSocket: 'bottom',
-                    endSocket: 'top',
+                    startSocket: startSocket,
+                    endSocket: endSocket,
                     // Square dashes
                     dash: { len: 5, gap: 5, animation: true },
                     dropShadow: false,
@@ -457,9 +490,12 @@ function initGraph() {
 
         // 1. Root Connections (Single Point Origin)
         // Root uses 'fluid' to CURVE as requested
-        createLine(startNode, eduNode, '50%', 'fluid');
-        createLine(startNode, expNode, '50%', 'straight');   // Center stays straight
-        createLine(startNode, skillNode, '50%', 'fluid');
+        // Draw connecting lines from bio card only on Laptop+ screens to avoid clutter
+        if (window.innerWidth > 1050) {
+            if (eduNode) createLine(startNode, eduNode, 'bottom', 'fluid');
+            if (expNode) createLine(startNode, expNode, 'bottom', 'fluid');
+            if (skillNode) createLine(startNode, skillNode, 'bottom', 'fluid');
+        }
 
         // 2. Cascading Connections (Tiered)
         // All vertical drops use 'straight' to avoid glitches
@@ -469,17 +505,21 @@ function initGraph() {
         const nodeEdu1 = document.getElementById('node-edu-1');
         if (nodeEdu1) createLine(eduNode, nodeEdu1, '50%', 'straight');
 
-
         // --- Experience Branch ---
         // Exp -> Freelancing -> Trading -> AI Tuning
         const nodeExp1 = document.getElementById('node-exp-1');
         const nodeExp2 = document.getElementById('node-exp-2');
         const nodeExp3 = document.getElementById('node-exp-3');
 
-        if (nodeExp1) createLine(expNode, nodeExp1, '50%', 'straight');
-        if (nodeExp1 && nodeExp2) createLine(nodeExp1, nodeExp2, '50%', 'straight');
-        if (nodeExp2 && nodeExp3) createLine(nodeExp2, nodeExp3, '50%', 'straight');
-
+        // On Mobile S, connect specifically to #node-exp-2 (2y Trading) and skip cascading lines
+        if (window.innerWidth <= 480) {
+            if (nodeExp2) createLine(expNode, nodeExp2, '50%', 'straight');
+        } else {
+            // Standard desktop cascading
+            if (nodeExp1) createLine(expNode, nodeExp1, '50%', 'straight');
+            if (nodeExp1 && nodeExp2) createLine(nodeExp1, nodeExp2, '50%', 'straight');
+            if (nodeExp2 && nodeExp3) createLine(nodeExp2, nodeExp3, '50%', 'straight');
+        }
 
         // --- Skills Branch ---
         // Skill -> Python -> AI/ML -> Algo
@@ -487,9 +527,15 @@ function initGraph() {
         const nodeSkill2 = document.getElementById('node-skill-2');
         const nodeSkill3 = document.getElementById('node-skill-3');
 
-        if (nodeSkill1) createLine(skillNode, nodeSkill1, '50%', 'straight');
-        if (nodeSkill1 && nodeSkill2) createLine(nodeSkill1, nodeSkill2, '50%', 'straight');
-        if (nodeSkill2 && nodeSkill3) createLine(nodeSkill2, nodeSkill3, '50%', 'straight');
+        // On Mobile S, connect specifically to #node-skill-2 (AI/ML) and skip cascading lines
+        if (window.innerWidth <= 480) {
+            if (nodeSkill2) createLine(skillNode, nodeSkill2, '50%', 'straight');
+        } else {
+            // Standard desktop cascading
+            if (nodeSkill1) createLine(skillNode, nodeSkill1, '50%', 'straight');
+            if (nodeSkill1 && nodeSkill2) createLine(nodeSkill1, nodeSkill2, '50%', 'straight');
+            if (nodeSkill2 && nodeSkill3) createLine(nodeSkill2, nodeSkill3, '50%', 'straight');
+        }
 
 
     } catch (e) {
@@ -509,7 +555,7 @@ function triggerScrollAnimation() {
     // Reset Visuals
     document.querySelectorAll('.graph-node, .leaf-node').forEach(n => {
         n.style.opacity = '0';
-        n.style.transform = 'scale(0.8)';
+        n.style.transform = 'scale(1)'; // FIX: Keep at scale(1) so LeaderLines draw to the correct final borders instantly
     });
 
     // Re-Initialize Lines (Hidden)
@@ -628,6 +674,12 @@ function triggerScrollAnimation() {
                 el.style.transform = 'scale(1)';
             }
         });
+
+        // FINAL FIX: Force an extra position update after all animations finish
+        // This ensures the custom SVG lines perfectly touch the borders on a fresh load 
+        // after all scale() transforms have definitively snapped into place.
+        setTimeout(updateGraphPositions, 200);
+
     }, T_L4_REVEAL);
 
 }
@@ -638,7 +690,7 @@ function resetScrollAnimation() {
     // Hide Nodes
     document.querySelectorAll('.graph-node, .leaf-node').forEach(n => {
         n.style.opacity = '0';
-        n.style.transform = 'scale(0.8)';
+        n.style.transform = 'scale(1)'; // Clean reset
     });
     // Clear graph
     disposeGraph();
@@ -652,6 +704,14 @@ function resetScrollAnimation() {
 window.addEventListener('scroll', () => {
     requestAnimationFrame(updateGraphPositions);
 }, { passive: true });
+
+// Ensure SVGs track nodes when the About page is actively scrolled natively
+const aboutOverlayEl = document.getElementById('about-overlay');
+if (aboutOverlayEl) {
+    aboutOverlayEl.addEventListener('scroll', () => {
+        requestAnimationFrame(updateGraphPositions);
+    }, { passive: true });
+}
 
 window.addEventListener('resize', () => {
     updateGraphPositions();
@@ -675,39 +735,16 @@ const initialHome = document.querySelector('.nav-link[data-target="home"]');
 if (initialHome) updateHighlight(initialHome);
 
 
-// --- DYNAMIC HOME LAYOUT SCALING ---
+// --- DYNAMIC HOME LAYOUT SCALING (Removed JS-Scaling) ---
+// Layout is strictly controlled by fluid CSS in home.css and global.css now.
 function handleResize() {
-    const width = window.innerWidth;
-    const textContainer = document.querySelector('.home-text-inner');
-    const mainTitle = document.getElementById('main-name');
+    // We keep handleResize only for the debug text update and to trigger
+    // the graph line repositioning when the window resizing stops.
 
-    if (textContainer) {
-        textContainer.style.transform = 'none';
-
-        // Removed JavaScript overriding of width/maxWidth properties. 
-        // This MUST be controlled entirely by home.css media queries.
-
-        textContainer.style.transformOrigin = 'center center';
-        if (mainTitle) mainTitle.style.fontSize = '';
-
-        if (width < 768) {
-            // Mobile Transform Scaling
-            const trueWidth = textContainer.offsetWidth;
-            const availableWidth = width * 0.90;
-            if (trueWidth > availableWidth) {
-                const scale = availableWidth / trueWidth;
-                textContainer.style.transform = `scale(${scale})`;
-            }
-        } else {
-            // Desktop Transform Scaling
-            const availableWidth = window.innerWidth * 0.5 - 40;
-            const currentCardWidth = textContainer.offsetWidth;
-            if (currentCardWidth > availableWidth) {
-                const scale = (availableWidth / currentCardWidth) * 0.95;
-                textContainer.style.transformOrigin = 'left center';
-                textContainer.style.transform = `scale(${scale})`;
-            }
-        }
+    // Update Debug Overlay Size
+    const debugText = document.getElementById('screen-debug-text');
+    if (debugText) {
+        debugText.innerText = `Screen: ${window.innerWidth}px x ${window.innerHeight}px`;
     }
 
     // Ensure graph paths are synced after layout changes
@@ -723,7 +760,18 @@ document.fonts.ready.then(handleResize);
 window.addEventListener('load', handleResize);
 setTimeout(handleResize, 100);
 
+// Debug Buttons
+document.querySelectorAll('.debug-size-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const w = e.target.getAttribute('data-width');
+        const h = e.target.getAttribute('data-height');
 
+        // Open a clean popup window with absolute sizing
+        const features = `width=${w},height=${h},left=100,top=100,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+        window.open(window.location.href, '_blank', features);
+    });
+});
 
 
 
@@ -2000,12 +2048,9 @@ document.addEventListener('click', (e) => {
     // Check if clicked element is inside a project category header
     const header = e.target.closest('.project-category h3');
     if (header) {
-        console.log("Project Category Clicked");
-        // Find parent category
         const wrapper = header.closest('.project-category');
         if (wrapper) {
             const cat = wrapper.getAttribute('data-category');
-            console.log("Category:", cat);
             if (cat) openSectorOverlay(cat);
         }
     }
@@ -2173,8 +2218,7 @@ document.addEventListener('click', (e) => {
         // Match logic: title match
         const project = projectsData.find(p => p.title === title || p.title.includes(title));
 
-        // Populate fallback data if detailed fields are missing (since data update failed)
-        // temporary fix until data is robust
+        // Populate fallback data for older trading projects that predate the detailed schema
         if (project && !project.goal) {
             project.goal = "Full goal details coming soon.";
             project.longDesc = project.detail;
